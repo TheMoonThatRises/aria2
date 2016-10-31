@@ -533,6 +533,56 @@ std::vector<A2Gid> getActiveDownload(Session* session)
   return res;
 }
 
+std::vector<A2Gid> getWaitingDownload(Session* session)
+{
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  const RequestGroupList& groups = e->getRequestGroupMan()->getReservedGroups();
+  std::vector<A2Gid> res;
+  for (const auto& group : groups) {
+    res.push_back(group->getGID());
+  }
+  return res;
+}
+
+std::vector<A2Gid> getStoppedDownload(Session* session)
+{
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  const DownloadResultList& groups = e->getRequestGroupMan()->getDownloadResults();
+  std::vector<A2Gid> res;
+  for (const auto& group : groups) {
+    res.push_back(group->getGID());
+  }
+  return res;
+}
+
+std::vector<A2Gid> getErrorDownload(Session* session)
+{
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  const DownloadResultList& drs = e->getRequestGroupMan()->getDownloadResults();
+  std::vector<A2Gid> res;
+  for (const auto& dr : drs) {
+    if (dr->result != error_code::FINISHED && dr->result != error_code::REMOVED)
+    {
+      res.push_back(dr->getGID());
+    }
+  }
+  return res;
+}
+
+std::vector<A2Gid> getCompletedDownload(Session* session)
+{
+  auto& e = session->context->reqinfo->getDownloadEngine();
+  const DownloadResultList& drs = e->getRequestGroupMan()->getDownloadResults();
+  std::vector<A2Gid> res;
+  for (const auto& dr : drs) {
+    if (dr->result == error_code::FINISHED)
+    {
+      res.push_back(dr->getGID());
+    }
+  }
+  return res;
+}
+
 namespace {
 template <typename OutputIterator, typename InputIterator>
 void createUriEntry(OutputIterator out, InputIterator first, InputIterator last,
