@@ -196,10 +196,12 @@ void SelectEventPoll::poll(const struct timeval& tv)
   do {
     struct timeval ttv = tv;
 #ifdef __MINGW32__
-    // winsock will report non-blocking connect() errors in efds,
-    // unlike posix, which will mark such sockets as writable.
-    retval = select(fdmax_ + 1, &rfds, &wfds, &efds, &ttv);
-#else  // !__MINGW32__
+    // winsock will report non-blocking connect() errors in exceptfds, unlike
+    // posix, which will mark such sockets as writable.
+    // So just pass in our write socket set to exceptfds, too, to get connect()
+    // error notifications on Windows.
+    retval = select(fdmax_ + 1, &rfds, &wfds, &wfds, &ttv);
+#else // !__MINGW32__
     retval = select(fdmax_ + 1, &rfds, &wfds, nullptr, &ttv);
 #endif // !__MINGW32__
   } while (retval == -1 && errno == EINTR);
