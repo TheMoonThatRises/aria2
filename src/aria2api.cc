@@ -550,7 +550,7 @@ std::vector<A2Gid> getStoppedDownload(Session* session)
   const DownloadResultList& groups = e->getRequestGroupMan()->getDownloadResults();
   std::vector<A2Gid> res;
   for (const auto& group : groups) {
-    res.push_back(group->getGID());
+    res.push_back(group->following);
   }
   return res;
 }
@@ -563,7 +563,7 @@ std::vector<A2Gid> getErrorDownload(Session* session)
   for (const auto& dr : drs) {
     if (dr->result != error_code::FINISHED && dr->result != error_code::REMOVED)
     {
-      res.push_back(dr->getGID());
+      res.push_back(dr->following);
     }
   }
   return res;
@@ -577,7 +577,7 @@ std::vector<A2Gid> getCompletedDownload(Session* session)
   for (const auto& dr : drs) {
     if (dr->result == error_code::FINISHED)
     {
-      res.push_back(dr->getGID());
+      res.push_back(dr->following);
     }
   }
   return res;
