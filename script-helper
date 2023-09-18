@@ -30,6 +30,6 @@
 # files in the program, then also delete it here.
 
 get_version () {
-  VERSION=`grep AC_INIT configure.ac | sed '/AC_INIT/ s/AC_INIT(\[aria2\],\[\([^]]\+\)\],.*/\1/'`
+  VERSION=`grep AC_INIT configure.ac | gsed '/AC_INIT/ s/AC_INIT(\[aria2\],\[\([^]]\+\)\],.*/\1/'`
   echo "Version: $VERSION"
 }
